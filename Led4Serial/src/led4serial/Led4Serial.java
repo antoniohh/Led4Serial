@@ -1,39 +1,62 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Antonio Horrillo Horrillo
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * Paquete led4serial.
  */
 package led4serial;
 
+/**
+ * Importamos las librerías necesarias.
+ */
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
+import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author anton
+ * Aplicación Led4Serial para el control de un dispositivo Arduino.
+ * 
+ * @author Antonio Horrillo Horrillo
  */
 public class Led4Serial extends javax.swing.JFrame implements SerialPortEventListener {
     
-    /**
-     * Definimos las variables.
-     */
-    SerialPort serialPort;
+    // Definimos las variables.
+    SerialPort puerto;
     CommPortIdentifier puertoId = null;
     private String PORT_NAME;
-    private InputStream input;
-    private OutputStream output;
+    private InputStream entrada;
+    private OutputStream salida;
     private int TIME_OUT;
     private int DATA_RATE;
+    ImageIcon on = new ImageIcon(new ImageIcon("src/img/on.png").getImage().
+            getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+    ImageIcon off = new ImageIcon(new ImageIcon("src/img/off.png").getImage().
+            getScaledInstance(20, 20, Image.SCALE_DEFAULT));
     
     /**
      * Creates new form Main
@@ -43,11 +66,18 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         init();
     }
     
+    /**
+     * Condiciones de inicio de la aplicación.
+     */
     private void init() {
+        
+        // Asignamos el valor de los combos a los campos de texto de parametros.
+        // de conexión del puerto serie.
         jTextField1.setText(jComboBox2.getSelectedItem().toString());
         jTextField3.setText(jComboBox1.getSelectedItem().toString());
         jTextField2.setText(jComboBox3.getSelectedItem().toString());
         
+        // Desactivados los botones al inicio hasta que no se realice la conexión.
         jButton3.setEnabled(false);
         jButton4.setEnabled(false);
         jButton5.setEnabled(false);
@@ -57,7 +87,13 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         jButton9.setEnabled(false);
         jButton10.setEnabled(false);
         jButton11.setEnabled(false);
-        jButton12.setEnabled(false);                                                                                                 
+        jButton12.setEnabled(false);
+        
+        // Establecemos los Iconos Leds a off.
+        jLabel12.setIcon(off);
+        jLabel13.setIcon(off);
+        jLabel14.setIcon(off);
+        jLabel15.setIcon(off);
     }
 
     /**
@@ -81,6 +117,9 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         jComboBox1 = new javax.swing.JComboBox<>();
         jComboBox2 = new javax.swing.JComboBox<>();
         jComboBox3 = new javax.swing.JComboBox<>();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -97,13 +136,23 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
         jTextField4 = new javax.swing.JTextField();
+        jTextField5 = new javax.swing.JTextField();
+        jTextField6 = new javax.swing.JTextField();
+        jTextField7 = new javax.swing.JTextField();
+        jTextField8 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jButton13 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -122,7 +171,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         jLabel3.setText("Velocidad de Datos:");
 
         jButton1.setText("Establecer Conexión");
-        jButton1.setPreferredSize(new java.awt.Dimension(180, 30));
+        jButton1.setPreferredSize(new java.awt.Dimension(150, 30));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -130,7 +179,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         });
 
         jButton2.setText("Cerrar Conexión");
-        jButton2.setPreferredSize(new java.awt.Dimension(180, 30));
+        jButton2.setPreferredSize(new java.awt.Dimension(150, 30));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -147,7 +196,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         });
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "COM1", "COM2", "COM3", "COM4" }));
-        jComboBox2.setToolTipText("PORT_NAME. En sistemas Windows COMx. En sistemas Linux /dev/ttySx y /dev/ttyACMx.");
+        jComboBox2.setToolTipText("PORT_NAME. En sistemas Windows COMx.");
         jComboBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox2ActionPerformed(evt);
@@ -163,6 +212,15 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             }
         });
 
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel9.setText("PORT_NAME");
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel10.setText("TIME_OUT");
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel11.setText("DATA_RATE");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -175,19 +233,26 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(63, 63, 63)
+                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(37, 37, 37))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel9))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -195,21 +260,24 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel11))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Gestión de Leds"));
@@ -224,6 +292,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
 
         jLabel8.setText("Todos los Leds");
 
+        jButton3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton3.setText("On");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -231,6 +300,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             }
         });
 
+        jButton4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton4.setText("Off");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -238,6 +308,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             }
         });
 
+        jButton5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton5.setText("On");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -245,19 +316,76 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             }
         });
 
+        jButton6.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton6.setText("Off");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
+        jButton7.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton7.setText("On");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
+        jButton8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton8.setText("Off");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
+        jButton9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton9.setText("On");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
+        jButton10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton10.setText("Off");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
+        jButton11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton11.setText("On");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
 
+        jButton12.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton12.setText("Off");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
+        jTextField4.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
+        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField4ActionPerformed(evt);
+            }
+        });
+
+        jTextField5.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
+
+        jTextField6.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
+
+        jTextField7.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
+
+        jTextField8.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -276,24 +404,40 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jButton3)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton4))
+                        .addComponent(jButton4)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField4))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jButton11)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton12))
+                        .addComponent(jButton12)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField8))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jButton9)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton10))
+                        .addComponent(jButton10)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField7))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jButton7)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton8))
+                        .addComponent(jButton8)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField6))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jButton5)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton6)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton6)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField5)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,37 +446,44 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(jButton4)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jButton5)
-                    .addComponent(jButton6))
+                    .addComponent(jButton6)
+                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jButton7)
-                    .addComponent(jButton8))
+                    .addComponent(jButton8)
+                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(jButton9)
-                    .addComponent(jButton10))
+                    .addComponent(jButton10)
+                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(jButton11)
-                    .addComponent(jButton12))
+                    .addComponent(jButton12)
+                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Mensajes de Arduino"));
 
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
-            }
-        });
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -340,15 +491,15 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 746, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jButton13.setText("Salir");
@@ -359,9 +510,6 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         });
 
         jMenu1.setText("Archivo");
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Salir");
 
         jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem1.setText("Salir");
@@ -370,8 +518,11 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
                 jMenuItem1ActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem1);
+        jMenu1.add(jMenuItem1);
 
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Ayuda");
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -382,14 +533,13 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton13)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -400,10 +550,10 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton13)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -424,6 +574,10 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
+        try {
+            cerrar();
+        }
+        catch(Exception e){}
         System.exit(0);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -438,7 +592,12 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         try {
-            enviar("azulon");
+            enviar("azulon");    
+            jLabel12.setIcon(on);
+            
+            
+            
+            //jLabel2.setIcon((Icon) new ImageIcon("src/img/on.png").getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH));
         }
         catch(Exception e){}        
         
@@ -446,12 +605,18 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        try {
+            enviar("verdeon");
+            jLabel13.setIcon(on);
+        }
+        catch(Exception e){}  
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         try {
             enviar("azuloff");
+            jLabel12.setIcon(off);
         }
         catch(Exception e){} 
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -462,6 +627,10 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         // TODO add your handling code here:
+        try {
+            cerrar();
+        }
+        catch(Exception e){}
         System.exit(0);
     }//GEN-LAST:event_jButton13ActionPerformed
 
@@ -488,6 +657,72 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         }
         catch(Exception e){} 
     }//GEN-LAST:event_jComboBox3ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        try {
+            enviar("verdeoff");
+        }
+        catch(Exception e){}  
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        try {
+            enviar("rojoon");
+            jLabel14.setIcon(on);
+        }
+        catch(Exception e){}  
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        try {
+            enviar("rojooff");
+        }
+        catch(Exception e){}  
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        try {
+            enviar("amarilloon");
+            jLabel15.setIcon(on);
+        }
+        catch(Exception e){}  
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        // TODO add your handling code here:
+        try {
+            enviar("amarillooff");
+        }
+        catch(Exception e){}  
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        // TODO add your handling code here:
+        try {
+            enviar("allon");
+            jLabel12.setIcon(on);
+            jLabel13.setIcon(on);
+            jLabel14.setIcon(on);
+            jLabel15.setIcon(on);
+        }
+        catch(Exception e){}  
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+        try {
+            enviar("alloff");
+            jLabel12.setIcon(off);
+            jLabel13.setIcon(off);
+            jLabel14.setIcon(off);
+            jLabel15.setIcon(off);
+        }
+        catch(Exception e){}  
+    }//GEN-LAST:event_jButton12ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -522,6 +757,11 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         });  
     }
     
+    /**
+     * Método conectar().
+     * 
+     * Realiza la conexión al puerto serie seleccionado en el combobox. 
+     */
     public synchronized void conectar() {
         
         try {
@@ -546,28 +786,28 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             }
           
             // open serial port, and use class name for the appName.
-            serialPort = (SerialPort) puertoId.open(this.getClass().getName(),
+            puerto = (SerialPort) puertoId.open(this.getClass().getName(),
                             TIME_OUT);
 
             // set port parameters
-            serialPort.setSerialPortParams(DATA_RATE,
+            puerto.setSerialPortParams(DATA_RATE,
                             SerialPort.DATABITS_8,
                             SerialPort.STOPBITS_1,
                             SerialPort.PARITY_NONE);
 
-            // open the streams
-            input = serialPort.getInputStream();
-            output = serialPort.getOutputStream();
+            // Abrimos los streams de entrada y salida de datos.
+            entrada = puerto.getInputStream();
+            salida = puerto.getOutputStream();
 
-            // add event listeners
-            serialPort.addEventListener(this);
-            serialPort.notifyOnDataAvailable(true);
+            // Añadimos los listeners.
+            puerto.addEventListener(this);
+            puerto.notifyOnDataAvailable(true);
                        
             // Mensaje de exito.
             JOptionPane.showMessageDialog(this,"Conexión Realizada.");
             
             // Habilitamos los botones de accion de los leds.
-            if (serialPort != null) {
+            if (puerto != null) {
                 jButton3.setEnabled(true);
                 jButton4.setEnabled(true);
                 jButton5.setEnabled(true);
@@ -591,21 +831,33 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         }
     }
     
+    /**
+     * Método cerrar().
+     * 
+     * Cierra la conexión serie creada, liberando el puerto.
+     */
     public synchronized void cerrar() {
         
-        if (serialPort != null) {
-            serialPort.removeEventListener();
-            serialPort.close();
+        if (puerto != null) {
+            puerto.removeEventListener();
+            puerto.close();
         }
     }
     
+    /**
+     * Método enviar(String cadena).
+     * 
+     * Envia una cadena de texto al dispositivo Arduino.
+     * 
+     * @param cadena 
+     */
     public synchronized void enviar(String cadena) {
 
         byte[] var;
         var=cadena.getBytes();
         
         try {
-            output.write(var);
+            salida.write(var);
         } 
         
         catch (IOException ex) {
@@ -613,17 +865,49 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         }
     }    
     
+    /**
+     * Método serialEvent(SerialPortEvent evento).
+     * 
+     * Recibe una cadena de texto enviada por el dispositivo Arduino y la muestra
+     * en el campo de texto asignado a tal fin.
+     * 
+     * @param evento 
+     */
     @Override
     public synchronized void serialEvent(SerialPortEvent evento) {
         if (evento.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 String cadena="";
                 wait(500);
-                while (input.available() > 0) {
-                    int dato = input.read();
+                while (entrada.available() > 0) {
+                    int dato = entrada.read();
                     cadena=cadena+(char)dato;
                 }
-                jTextField4.setText(cadena);                
+                
+                if (cadena.contains("Azul")) {
+                    jTextField4.setText(cadena);
+                }
+                
+                else if (cadena.contains("verde")) {
+                    jTextField5.setText(cadena);
+                }                
+                
+                else if (cadena.contains("rojo")) {
+                    jTextField6.setText(cadena);
+                }
+                
+                else if (cadena.contains("amarillo")) {
+                    jTextField7.setText(cadena);
+                }
+                
+                else if (cadena.contains("Todos")) {
+                    jTextField8.setText(cadena);
+                }
+                
+                else {
+                    String arduino=jTextArea1.getText() + cadena;
+                    jTextArea1.setText(arduino);
+                }
             }             
             catch (InterruptedException | IOException e) {
                 System.err.println(e.toString());
@@ -649,6 +933,12 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -656,6 +946,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -663,10 +954,16 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField jTextField8;
     // End of variables declaration//GEN-END:variables
 
 }
