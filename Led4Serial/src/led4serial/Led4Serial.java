@@ -53,9 +53,9 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private OutputStream salida;
     private int TIME_OUT;
     private int DATA_RATE;
-    ImageIcon on = new ImageIcon(new ImageIcon("src/img/on.png").getImage().
+    ImageIcon on = new ImageIcon(new ImageIcon("./on.png").getImage().
             getScaledInstance(20, 20, Image.SCALE_DEFAULT));
-    ImageIcon off = new ImageIcon(new ImageIcon("src/img/off.png").getImage().
+    ImageIcon off = new ImageIcon(new ImageIcon("./off.png").getImage().
             getScaledInstance(20, 20, Image.SCALE_DEFAULT));
     
     /**
@@ -594,10 +594,6 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         try {
             enviar("azulon");    
             jLabel12.setIcon(on);
-            
-            
-            
-            //jLabel2.setIcon((Icon) new ImageIcon("src/img/on.png").getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH));
         }
         catch(Exception e){}        
         
