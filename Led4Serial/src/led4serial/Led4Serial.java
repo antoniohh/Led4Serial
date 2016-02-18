@@ -33,6 +33,7 @@ import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 import javax.swing.ImageIcon;
@@ -53,9 +54,10 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private OutputStream salida;
     private int TIME_OUT;
     private int DATA_RATE;
-    ImageIcon on = new ImageIcon(new ImageIcon("./on.png").getImage().
+    String dir = System.getProperty("user.dir");
+    ImageIcon on = new ImageIcon(new ImageIcon("./img/on.png").getImage().
             getScaledInstance(20, 20, Image.SCALE_DEFAULT));
-    ImageIcon off = new ImageIcon(new ImageIcon("./off.png").getImage().
+    ImageIcon off = new ImageIcon(new ImageIcon("./img/off.png").getImage().
             getScaledInstance(20, 20, Image.SCALE_DEFAULT));
     
     /**
@@ -63,39 +65,10 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
      */
     public Led4Serial() {
         initComponents();
-        init();
+        inicio();
+        libreria();
     }
     
-    /**
-     * Condiciones de inicio de la aplicación.
-     */
-    private void init() {
-        
-        // Asignamos el valor de los combos a los campos de texto de parametros.
-        // de conexión del puerto serie.
-        jTextField1.setText(jComboBox2.getSelectedItem().toString());
-        jTextField3.setText(jComboBox1.getSelectedItem().toString());
-        jTextField2.setText(jComboBox3.getSelectedItem().toString());
-        
-        // Desactivados los botones al inicio hasta que no se realice la conexión.
-        jButton3.setEnabled(false);
-        jButton4.setEnabled(false);
-        jButton5.setEnabled(false);
-        jButton6.setEnabled(false);
-        jButton7.setEnabled(false);
-        jButton8.setEnabled(false);
-        jButton9.setEnabled(false);
-        jButton10.setEnabled(false);
-        jButton11.setEnabled(false);
-        jButton12.setEnabled(false);
-        
-        // Establecemos los Iconos Leds a off.
-        jLabel12.setIcon(off);
-        jLabel13.setIcon(off);
-        jLabel14.setIcon(off);
-        jLabel15.setIcon(off);
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -568,6 +541,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         // TODO add your handling code here:
         try {
             cerrar();
+            JOptionPane.showMessageDialog(this,"Se ha cerrado la conexión con el puerto serie "+PORT_NAME+".");
         }
         catch(Exception e){}
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -748,23 +722,79 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             @Override
             public void run() {
                 new Led4Serial().setVisible(true);
-
             }
         });  
     }
+
+    /**
+     * Condiciones de inicio de la aplicación.
+     */
+    private void inicio() {
+        
+        // Asignamos el valor de los combos a los campos de texto de parametros
+        // de conexión del puerto serie.
+        jTextField1.setText(jComboBox2.getSelectedItem().toString());
+        jTextField3.setText(jComboBox1.getSelectedItem().toString());
+        jTextField2.setText(jComboBox3.getSelectedItem().toString());
+        
+        // Desactivados los botones al inicio hasta que no se realice la conexión.
+        jButton3.setEnabled(false);
+        jButton4.setEnabled(false);
+        jButton5.setEnabled(false);
+        jButton6.setEnabled(false);
+        jButton7.setEnabled(false);
+        jButton8.setEnabled(false);
+        jButton9.setEnabled(false);
+        jButton10.setEnabled(false);
+        jButton11.setEnabled(false);
+        jButton12.setEnabled(false);
+        
+        // Establecemos los Iconos Leds a off.
+        jLabel12.setIcon(off);
+        jLabel13.setIcon(off);
+        jLabel14.setIcon(off);
+        jLabel15.setIcon(off);
+    }
+    
+    /**
+     * Método libreria().
+     * 
+     * Modificamos el Path añadiendo la ruta de la librería que necesitamos cargar. 
+     * Cargamos la librería rxtxSerial.dll Win x64 para la comunicación con el
+     * puerto serie. Esta versión es la de Windows de 64 bits.
+     */
+    private void libreria() {       
+        try {
+            System.setProperty("java.library.path", dir + "\\lib" );
+            Field fieldSysPath = ClassLoader.class.getDeclaredField( "sys_paths" );
+            fieldSysPath.setAccessible( true );
+            fieldSysPath.set( null, null );           
+            
+            System.loadLibrary("rxtxSerial");
+            JOptionPane.showMessageDialog(this,"Librería rxtxSerial.dll para Windows x64 cargada.");
+        } 
+        catch (UnsatisfiedLinkError u) {
+            System.err.println(u);
+            JOptionPane.showMessageDialog(this,"No se ha podido cargar la libreria rxtxSerial.dll para Windows x64.");
+            System.exit(0);
+        }
+        catch (NoSuchFieldException | IllegalAccessException e) {
+            System.err.println(e);
+            JOptionPane.showMessageDialog(this,"No se dispone de los permisos necesarios para cambiar el Path.");
+            System.exit(0);
+        }
+    }    
     
     /**
      * Método conectar().
      * 
      * Realiza la conexión al puerto serie seleccionado en el combobox. 
      */
-    public synchronized void conectar() {
-        
-        try {
-            
+    public synchronized void conectar() {       
+        try {           
             if ("".equals(jTextField2.getText()) | "".equals(jTextField3.getText()) |
                     "".equals(jTextField1.getText())) {
-                JOptionPane.showMessageDialog(null,"Introduzca todos los datos del puerto serie.");
+                JOptionPane.showMessageDialog(this,"Introduzca todos los datos del puerto serie.");
                 return;
             }
        
@@ -800,7 +830,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             puerto.notifyOnDataAvailable(true);
                        
             // Mensaje de exito.
-            JOptionPane.showMessageDialog(this,"Conexión Realizada.");
+            JOptionPane.showMessageDialog(this,"Se ha establecido la conexión con el puerto serie "+PORT_NAME+".");
             
             // Habilitamos los botones de accion de los leds.
             if (puerto != null) {
@@ -823,7 +853,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             System.err.println(e.toString());
             
             // Mensaje de fallo.
-            JOptionPane.showMessageDialog(this,"Conexión Fallida.");
+            JOptionPane.showMessageDialog(this,"No se ha podido establecer la conexión.");
         }
     }
     
@@ -832,8 +862,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
      * 
      * Cierra la conexión serie creada, liberando el puerto.
      */
-    public synchronized void cerrar() {
-        
+    public synchronized void cerrar() {       
         if (puerto != null) {
             puerto.removeEventListener();
             puerto.close();
@@ -874,7 +903,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         if (evento.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 String cadena="";
-                wait(500);
+                wait(200);
                 while (entrada.available() > 0) {
                     int dato = entrada.read();
                     cadena=cadena+(char)dato;
