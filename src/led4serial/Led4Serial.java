@@ -30,6 +30,9 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,6 +40,7 @@ import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -54,6 +58,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private OutputStream salida;
     private int TIME_OUT;
     private int DATA_RATE;
+    String sis = System.getProperty("os.name" );
     String dir = System.getProperty("user.dir");
     ImageIcon on = new ImageIcon(new ImageIcon("./img/on.png").getImage().
             getScaledInstance(20, 20, Image.SCALE_DEFAULT));
@@ -121,7 +126,6 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jButton13 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -471,16 +475,9 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                .addComponent(jScrollPane1)
                 .addContainerGap())
         );
-
-        jButton13.setText("Salir");
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
-            }
-        });
 
         jMenu1.setText("Archivo");
 
@@ -509,10 +506,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton13)))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -524,8 +518,6 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton13)
                 .addContainerGap())
         );
 
@@ -594,15 +586,6 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4ActionPerformed
-
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        // TODO add your handling code here:
-        try {
-            cerrar();
-        }
-        catch(Exception e){}
-        System.exit(0);
-    }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
         // TODO add your handling code here:
@@ -705,7 +688,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
+                if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -730,6 +713,9 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
      * Condiciones de inicio de la aplicación.
      */
     private void inicio() {
+        
+        // Iniciando la aplicación.
+        System.out.println("Iniciando la aplicación.");
         
         // Asignamos el valor de los combos a los campos de texto de parametros
         // de conexión del puerto serie.
@@ -760,28 +746,59 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
      * Método libreria().
      * 
      * Modificamos el Path añadiendo la ruta de la librería que necesitamos cargar. 
-     * Cargamos la librería rxtxSerial.dll Win x64 para la comunicación con el
-     * puerto serie. Esta versión es la de Windows de 64 bits.
+     * Cargamos la librería rxtxSerial.dll de Windows de 64 bits para la comunicación 
+     * con el puerto serie. Esta versión es la de Windows de 64 bits. En sistemas 
+     * GNU/Linux de 64 bits cargamos la libreria librxtxSerial.so.
+     * 
      */
-    private void libreria() {       
-        try {
-            System.setProperty("java.library.path", dir + "\\lib" );
-            Field fieldSysPath = ClassLoader.class.getDeclaredField( "sys_paths" );
-            fieldSysPath.setAccessible( true );
-            fieldSysPath.set( null, null );           
-            
-            System.loadLibrary("rxtxSerial");
-            JOptionPane.showMessageDialog(this,"Librería rxtxSerial.dll para Windows x64 cargada.");
-        } 
-        catch (UnsatisfiedLinkError u) {
-            System.err.println(u);
-            JOptionPane.showMessageDialog(this,"No se ha podido cargar la libreria rxtxSerial.dll para Windows x64.");
-            System.exit(0);
+    private void libreria() {
+        System.out.println("Sistema Operativo: " + sis);
+        String[] os = sis.split(" ");
+        System.out.println("ID Sistema Operativo: " + os[0]);
+        if ("Linux".equals(os[0])) {
+            /**
+            try {
+                System.setProperty("java.library.path", dir + "/lib" );
+                Field fieldSysPath = ClassLoader.class.getDeclaredField( "sys_paths" );
+                fieldSysPath.setAccessible( true );
+                fieldSysPath.set( null, null );
+
+                System.loadLibrary("rxtxSerial");
+                JOptionPane.showMessageDialog(this,"Librería librxtxSerial.so para GNU/Linux x64 cargada.");
+            } 
+            catch (UnsatisfiedLinkError u) {
+                System.err.println(u);
+                JOptionPane.showMessageDialog(this,"No se ha podido cargar la libreria librxtxSerial.so para GNU/Linux x64.");
+                System.exit(0);
+            }
+            catch (NoSuchFieldException | IllegalAccessException e) {
+                System.err.println(e);
+                JOptionPane.showMessageDialog(this,"No se dispone de los permisos necesarios para cambiar el Path.");
+                System.exit(0);
+            }
+            * */
         }
-        catch (NoSuchFieldException | IllegalAccessException e) {
-            System.err.println(e);
-            JOptionPane.showMessageDialog(this,"No se dispone de los permisos necesarios para cambiar el Path.");
-            System.exit(0);
+        
+        else if ("Windows".equals(os[0])) {
+            try {
+                System.setProperty("java.library.path", dir + "\\lib" );
+                Field fieldSysPath = ClassLoader.class.getDeclaredField( "sys_paths" );
+                fieldSysPath.setAccessible( true );
+                fieldSysPath.set( null, null );           
+
+                System.loadLibrary("rxtxSerial");
+                JOptionPane.showMessageDialog(this,"Librería rxtxSerial.dll para Windows x64 cargada.");
+            } 
+            catch (UnsatisfiedLinkError u) {
+                System.err.println(u);
+                JOptionPane.showMessageDialog(this,"No se ha podido cargar la libreria rxtxSerial.dll para Windows x64.");
+                System.exit(0);
+            }
+            catch (NoSuchFieldException | IllegalAccessException e) {
+                System.err.println(e);
+                JOptionPane.showMessageDialog(this,"No se dispone de los permisos necesarios para cambiar el Path.");
+                System.exit(0);
+            }            
         }
     }    
     
@@ -876,15 +893,11 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
      * 
      * @param cadena 
      */
-    public synchronized void enviar(String cadena) {
-
-        byte[] var;
-        var=cadena.getBytes();
-        
+    public synchronized void enviar(String cadena) {        
         try {
-            salida.write(var);
-        } 
-        
+            salida.write(cadena.getBytes());
+            System.out.println("Enviado a Arduino: " + cadena);
+        }
         catch (IOException ex) {
             System.err.println(ex.toString());
         }
@@ -945,7 +958,6 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
