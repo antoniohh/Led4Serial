@@ -105,7 +105,7 @@ public class Dao extends Sistema {
     public void crearDB() {
         try {
             Class.forName("org.sqlite.JDBC");
-            this.conn = DriverManager.getConnection("jdbc:sqlite:./db/ardu.db");
+            this.conn = DriverManager.getConnection("jdbc:sqlite:"+this.getDbFile());
             this.stmt = this.conn.createStatement();
             this.stmt.close();
             this.conn.close();
