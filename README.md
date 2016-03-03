@@ -2,9 +2,8 @@
 ## Versión 1.2
 ## Aplicación Java para controlar un dispositivo Arduino.
 ### Novedades:
-### ----------
-### Cambio de librerías de control del puerto serie: java-simple-serial-connector.
-### Base de datos SQLite para almacenar mensajes con el conector SQLite JDBC Driver.
+### Librerías de control del puerto serie: java-simple-serial-connector.
+### Base de datos SQLite con el conector SQLite JDBC Driver.
 ### Control de logs de ejecución mediante Apache Log4j.
 ### Fuente de iconos Font Awesome facilitados por jIconFont.
  
@@ -26,7 +25,7 @@ cerrar la misma y abrir otra comunicación con otro puerto sin cerrar la aplicac
 
 La programación para el dispositivo arduino se adjunta en el proyecto. 
 
-La aplicación Java se ha desarrollado en un proyecto de NetBeans con Maven.
+La aplicación Java se ha desarrollado en un proyecto de **NetBeans** con **Maven**.
 
 Para ejecutar la aplicación es necesario el paquete JSSC integrado en la aplicación:
 
@@ -40,21 +39,35 @@ Los iconos de encendido y apagado:
 
 Los iconos Font Awesome y librería java jIconFont:
 
-> Font Awesome (https://fortawesome.github.io/Font-Awesome/)
-> Librería java jIconFont (http://jiconfont.github.io/)
+> [Font Awesome] (https://fortawesome.github.io/Font-Awesome/)
+> [Librería java] jIconFont (http://jiconfont.github.io/)
 
 Control de Logs Apache Log4j:
 
-> Log4j (https://logging.apache.org/)
+> [Log4j] (https://logging.apache.org/)
 
 SQLite Conector JDBC:
  
-> SQLite JDBC Driver provided as a courtesy of Taro L. Saito (http://xerial.org/leo/).
-> JDBC (https://bitbucket.org/xerial/sqlite-jdbc)
-> JDBC (https://github.com/xerial/sqlite-jdbc)
+> SQLite JDBC Driver provided as a courtesy of [Taro L. Saito] (http://xerial.org/leo/).
+> [JDBC] (https://bitbucket.org/xerial/sqlite-jdbc)
+> [JDBC GitHub] (https://github.com/xerial/sqlite-jdbc)
 
 Base de Datos SQLite:
 
-> SQLite (https://sqlite.org/)
+> [SQLite] (https://sqlite.org/)
+
+Capturas.
+
+Pestaña primera:
+
+![Configuración del Puerto](https://dl.dropboxusercontent.com/u/3193442/Proyectos/led4serial1.png)
+
+Pestaña segunda:
+
+![Control de Leds](https://dl.dropboxusercontent.com/u/3193442/Proyectos/led4serial2.png)
+
+Pestaña tercera:
+
+![Control de Mensajes](https://dl.dropboxusercontent.com/u/3193442/Proyectos/led4serial3.png)
 
 Led4Serial.
