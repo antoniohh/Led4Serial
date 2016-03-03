@@ -21,6 +21,11 @@
 package l4s.javapp.led4serial;
 
 /**
+ * Importamos las librerías necesarias.
+ */
+import java.io.File;
+
+/**
  * Aplicación Led4Serial para el control de un dispositivo Arduino.
  * 
  * @author Antonio Horrillo Horrillo
@@ -36,6 +41,9 @@ public class Sistema {
     private String javaRuta;
     private String sepRuta;
     private String dbRuta;
+    private File tempFile;
+    private String actRuta;
+    private String dbFile;    
     
     /**
      * Constructor de clase que inicializa los atributos a los valores del sistema.
@@ -46,9 +54,12 @@ public class Sistema {
         this.usuRuta = System.getProperty("user.dir");
         this.javaRuta = System.getProperty("java.home");
         this.sepRuta = System.getProperty("file.separator");
-        this.dbRuta = this.usuRuta+this.sepRuta+"arduino.db";
+        this.tempFile = new File (".");
+        this.actRuta = tempFile.getAbsolutePath();
+        this.dbRuta = this.actRuta+this.sepRuta+"db";
+        this.dbFile = this.actRuta+this.sepRuta+"db"+this.sepRuta+"arduino.db";
     }
-    
+
     /**
      * Constructor de clase que inicializa los atributos a los valores 
      * indicados por los parámetros.
@@ -59,16 +70,69 @@ public class Sistema {
      * @param javaRuta
      * @param sepRuta
      * @param dbRuta
+     * @param actRuta
+     * @param tempFile
+     * @param dbFile
      */
     public Sistema(String sistema, String arquitectura, String usuRuta, 
-            String javaRuta, String sepRuta, String dbRuta) {
+            String javaRuta, String sepRuta, String dbRuta, String actRuta, 
+            File tempFile, String dbFile) {
         this.sistema = sistema;
         this.arquitectura = arquitectura;
         this.usuRuta = usuRuta;
         this.javaRuta = javaRuta;
         this.sepRuta = sepRuta;
         this.dbRuta = dbRuta;
+        this.tempFile = tempFile;
+        this.actRuta = actRuta;
+    }
+    
+    /**
+     * Metodo get para obtener (leer) el atributo.
+     * @return 
+     */
+    public String getDbFile() {
+        return dbFile;
+    }
 
+    /**
+     * Metodo set para asignar (almacenar) el atributo. 
+     * @param dbFile 
+     */
+    public void setDbFile(String dbFile) {
+        this.dbFile = dbFile;
+    }
+    
+    /**
+     * Metodo get para obtener (leer) el atributo.
+     * @return 
+     */
+    public File getTempFile() {
+        return tempFile;
+    }
+    
+    /**
+     * Metodo set para asignar (almacenar) el atributo. 
+     * @param tempFile
+     */
+    public void setTempFile(File tempFile) {
+        this.tempFile = tempFile;
+    }
+    
+    /**
+     * Metodo get para obtener (leer) el atributo.
+     * @return 
+     */
+    public String getActRuta() {
+        return actRuta;
+    }
+    
+    /**
+     * Metodo set para asignar (almacenar) el atributo. 
+     * @param actRuta
+     */
+    public void setActRuta(String actRuta) {
+        this.actRuta = actRuta;
     }
     
     /**
@@ -177,9 +241,5 @@ public class Sistema {
     
     public String javaHome() {
         return "Java Home: \n"+this.javaRuta;
-    }
-    
-    public String dbHome() {
-        return "DB Home: \n"+this.dbRuta;
     }
 }

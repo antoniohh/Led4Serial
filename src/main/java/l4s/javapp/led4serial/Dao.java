@@ -105,7 +105,7 @@ public class Dao extends Sistema {
     public void crearDB() {
         try {
             Class.forName("org.sqlite.JDBC");
-            this.conn = DriverManager.getConnection("jdbc:sqlite:"+this.getDbRuta());
+            this.conn = DriverManager.getConnection("jdbc:sqlite:./db/ardu.db");
             this.stmt = this.conn.createStatement();
             this.stmt.close();
             this.conn.close();
@@ -125,7 +125,7 @@ public class Dao extends Sistema {
     public void crearTabla() {
         try {
             Class.forName("org.sqlite.JDBC");
-            this.conn = DriverManager.getConnection("jdbc:sqlite:"+this.getDbRuta());
+            this.conn = DriverManager.getConnection("jdbc:sqlite:"+this.getDbFile());
             this.stmt = this.conn.createStatement();  
             System.out.println("Conexión a la base de Datos realizada correctamente.");
             String sql = "CREATE TABLE IF NOT EXISTS MENSAJES " +
@@ -149,7 +149,7 @@ public class Dao extends Sistema {
     public void insertarMensaje(String msg) {
         try {
             Class.forName("org.sqlite.JDBC");
-            this.conn = DriverManager.getConnection("jdbc:sqlite:"+this.getDbRuta());
+            this.conn = DriverManager.getConnection("jdbc:sqlite:"+this.getDbFile());
             System.out.println("Conexión a la base de Datos realizada correctamente.");
             this.conn.setAutoCommit(false);
             this.stmt = this.conn.createStatement();
@@ -170,7 +170,7 @@ public class Dao extends Sistema {
     public ArrayList leerMensaje() {       
         try {
             Class.forName("org.sqlite.JDBC");
-            this.conn = DriverManager.getConnection("jdbc:sqlite:"+this.getDbRuta());
+            this.conn = DriverManager.getConnection("jdbc:sqlite:"+this.getDbFile());
             System.out.println("Conexión a la base de Datos realizada correctamente.");
             this.conn.setAutoCommit(false);
             this.stmt = this.conn.createStatement();

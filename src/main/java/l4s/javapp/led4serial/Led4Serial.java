@@ -56,6 +56,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private DefaultListModel jlista2Modelo;
     private ArrayList lista;
     private File ficDb;
+    private File dirDb;
     private String[] os;
     private static final Logger LOG = Logger.getLogger(Led4Serial.class);
     
@@ -1232,6 +1233,10 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         this.sistema = new Sistema();
         this.os = sistema.getSistema().split(" ");
 
+        // Creamos el directorio ../db para la base de datos.
+        this.dirDb = new File(sistema.getDbRuta());
+        this.dirDb.mkdir();
+            
         // Mensajes con el sistema operativo y la ruta de jre.
         System.out.println("Iniciando la aplicación...");
         System.out.println(sistema.sistemaOperativo());
@@ -1249,9 +1254,9 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
     private void persistencia() {
         
         try {            
-            // Instanciamos objeto sistema de la clase Sistema().
+            // Instanciamos objeto sistema de la clase Dao().                  
             this.dao = new Dao();
-            this.ficDb = new File(sistema.getDbRuta());
+            this.ficDb = new File(sistema.getDbFile());
             
             // Comprobamos la existencia del archivo de la base de datos.
             if (ficDb.exists()) {
