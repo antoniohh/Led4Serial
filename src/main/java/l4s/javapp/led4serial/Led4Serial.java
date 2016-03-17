@@ -1611,7 +1611,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
                     System.out.println("Recibido de Arduino: " + cadena);
                     jlista2Modelo.addElement(cadena);
                     dao.insertarMensaje(cadena);                 
-                    if (cadena.contains("Azul")) {
+                    if (cadena.contains("azul")) {
                         if (cadena.contains("Encendido")) jLabel4.setIcon(this.on);
                         else if (cadena.contains("Apagado")) jLabel4.setIcon(this.off);
                         jTextField4.setText(cadena);
@@ -1632,8 +1632,18 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
                         jTextField7.setText(cadena);
                     }
                     else if (cadena.contains("Todos")) {
-                        if (cadena.contains("Encendidos")) jLabel4.setIcon(this.on);
-                        else if (cadena.contains("Apagados")) jLabel4.setIcon(this.off);
+                        if (cadena.contains("Encendidos")) {
+                            jLabel4.setIcon(this.on);
+                            jLabel5.setIcon(this.on);
+                            jLabel6.setIcon(this.on);
+                            jLabel7.setIcon(this.on);
+                        }
+                        else if (cadena.contains("Apagados")) {
+                            jLabel4.setIcon(this.off);
+                            jLabel5.setIcon(this.off);
+                            jLabel6.setIcon(this.off);
+                            jLabel7.setIcon(this.off);
+                        }
                         jTextField8.setText(cadena);
                     }
                 }
