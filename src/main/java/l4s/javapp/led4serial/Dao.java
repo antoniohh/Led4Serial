@@ -196,14 +196,4 @@ public class Dao extends Sistema {
         }
         return this.lista;
     }
-    
-    
-    
-    
-    
-
-    
-    
-
-    
 }

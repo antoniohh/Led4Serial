@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
  * Aplicación Led4Serial para el control de un dispositivo Arduino.
  *
  * @author Antonio Horrillo Horrillo
- * @version 1.2.0.0
+ * @version 1.4.0.0
  */
 public class Led4Serial extends javax.swing.JFrame implements SerialPortEventListener {
 
@@ -1321,7 +1321,7 @@ public class Led4Serial extends javax.swing.JFrame implements SerialPortEventLis
         this.off = new ImageIcon(getClass().getResource("/off.png"));
         this.on = new ImageIcon(getClass().getResource("/on.png"));
         
-        // Establecemos el icono de la barra de menus de la palicación.
+        // Establecemos el icono de la barra de menus de la aplicación.
         this.icon = new ImageIcon(getClass().getResource("/Led4Serial.png")).getImage();
         setIconImage(icon);
         
