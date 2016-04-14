@@ -2,7 +2,7 @@
 ## Versión 1.4.0.0
 ## Aplicación Java para controlar un dispositivo Arduino.
 
-### Novedades versión 1.3:
+### Novedades versión 1.4.0.0:
 Corregido el bug al crear la base de datos y el log.
 En desarrollo instalador para windows.
 
@@ -33,7 +33,6 @@ La programación para el dispositivo arduino se adjunta en el proyecto.
 La aplicación Java se ha desarrollado en un proyecto de **NetBeans** con **Maven**.
 
 ### Dependencias.
-
 Para ejecutar la aplicación es necesario el paquete JSSC integrado en la aplicación:
 
 > Java-simple-serial-connector provided as a courtesy of scream3r.
